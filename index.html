@@ -53,7 +53,10 @@
   .rrow{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid rgba(109,134,240,.2)}
   .rrow:last-child{border-bottom:none}
   .rlbl{font-size:13.5px;color:var(--ink);font-weight:500}
-  #calcStake{font-weight:700;font-size:20px;color:var(--accent)}
+  .misewrap{display:flex;align-items:center;gap:5px}
+  .misewrap input{width:104px;text-align:right;font-weight:700;font-size:20px;color:var(--accent);background:var(--soft);border:1px solid var(--line);border-radius:9px;padding:7px 9px}
+  .misewrap input:focus{border-color:var(--accent)}
+  .misewrap b{color:var(--accent);font-size:15px}
   #calcNet{font-weight:700;font-size:18px;color:var(--green)}
 
   button{border:none;border-radius:13px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;color:#fff;font-family:inherit;transition:opacity .1s}
@@ -106,6 +109,7 @@
 <div class="header">
   <h1>Paris · Match nul (N)</h1>
   <div class="sub" id="jeuTitle">Multi-ligues</div>
+  <div class="sub" id="syncBadge" style="font-size:11px;margin-top:2px"></div>
 </div>
 
 <div class="leagues-bar" id="leaguesBar"></div>
@@ -129,16 +133,16 @@
     <div class="vs">vs</div>
     <label class="f">Équipe 2<input type="text" id="e2" placeholder="Extérieur"></label>
   </div>
-  <label class="f">Cote (nul)<input type="number" id="odds" step="0.01" placeholder="3.30" inputmode="decimal" oninput="updateCalc()"></label>
+  <label class="f">Cote (nul)<input type="number" id="odds" step="0.01" placeholder="3.30" inputmode="decimal" oninput="suggest()"></label>
   <div class="grid2">
     <label class="f">Gain souhaité €<input type="number" id="objectif" step="1" placeholder="50" inputmode="numeric" oninput="onObjectifInput()"></label>
-    <label class="f">Perte à récupérer €<input type="number" id="perte" step="1" placeholder="0" inputmode="numeric" oninput="updateCalc()"></label>
+    <label class="f">Perte à récupérer €<input type="number" id="perte" step="1" placeholder="0" inputmode="numeric" oninput="suggest()"></label>
   </div>
 
   <div class="warn" id="calcWarn"></div>
 
   <div class="result">
-    <div class="rrow"><span class="rlbl">Mise à jouer</span><span id="calcStake">—</span></div>
+    <div class="rrow"><span class="rlbl">Mise à jouer</span><span class="misewrap"><input type="number" id="stake" step="0.01" inputmode="decimal" placeholder="—" oninput="updateNet()"><b>€</b></span></div>
     <div class="rrow"><span class="rlbl">Gain net garanti</span><span id="calcNet">—</span></div>
   </div>
 
@@ -188,7 +192,37 @@ let data = JSON.parse(localStorage.getItem(LS_KEY)||"null") || { leagues:[] };
 if(!Array.isArray(data.leagues)) data.leagues=[];
 let selLeague = localStorage.getItem("selLeagueNul") || (data.leagues[0]&&data.leagues[0].id) || null;
 
-function save(){ localStorage.setItem(LS_KEY, JSON.stringify(data)); }
+// ---- SYNCHRONISATION (Cloudflare Worker) ----
+const WORKER_URL="https://paris-data.w3ruslan-8c5.workers.dev";
+let syncTimer=null;
+function saveLocal(){ localStorage.setItem(LS_KEY, JSON.stringify(data)); }
+function save(){ saveLocal(); localStorage.setItem('pendingParisNul','1'); scheduleSync(); }
+function setSync(t){ const e=document.getElementById('syncBadge'); if(e) e.textContent=t; }
+async function pullData(){
+  setSync('⏳ Chargement…');
+  try{
+    const r=await fetch(WORKER_URL+"?t="+Date.now(),{cache:'no-store'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const cloud=await r.json();
+    const cl=Array.isArray(cloud.leagues)?cloud.leagues:[];
+    const pending=localStorage.getItem('pendingParisNul')==='1';
+    if(pending){ await pushData(); return; }
+    if(cl.length===0 && data.leagues.length>0){ await pushData(); return; }
+    data={leagues:cl};
+    if(!data.leagues.some(l=>l.id===selLeague)) selLeague=(data.leagues[0]&&data.leagues[0].id)||null;
+    saveLocal(); render();
+    setSync('☁️ Synchronisé');
+  }catch(e){ setSync('👁️ Hors ligne'); }
+}
+function scheduleSync(){ setSync('✎ Enregistrement…'); clearTimeout(syncTimer); syncTimer=setTimeout(pushData,900); }
+async function pushData(){
+  setSync('⏳ Enregistrement…');
+  try{
+    const r=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    localStorage.removeItem('pendingParisNul'); setSync('☁️ Synchronisé');
+  }catch(e){ setSync('⚠️ '+e.message); }
+}
 function fmt(n){ return Number(n).toFixed(2).replace(/\./,',').replace(/,00$/,'').replace(/(,\d)0$/,'$1'); }
 function money(n){ return (n>0?'+':'')+fmt(n)+' €'; }
 function todayDate(){ const d=new Date(); return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getFullYear()).slice(2); }
@@ -197,34 +231,44 @@ function getLeague(){ return data.leagues.find(l=>l.id===selLeague) || null; }
 function betProfit(b){ if(b.result==='win') return b.P; if(b.result==='loss') return -b.stake; return 0; }
 function currentLoss(bets){ let acc=0; [...bets].reverse().forEach(b=>{ if(b.result==='loss') acc+=b.stake; else if(b.result==='win') acc=0; }); return acc; }
 
-// ---- CALCUL (nul seul) : mise = (gain + perte) / (cote - 1) ----
-function computeBet(){
+// ---- CALCUL (nul seul) : mise conseillée = (gain + perte) / (cote - 1), modifiable ----
+function computeSuggested(){
   const odds=parseFloat(document.getElementById('odds').value)||0;
   const obj=parseFloat(document.getElementById('objectif').value)||0;
   const perte=parseFloat(document.getElementById('perte').value)||0;
   const P=obj+perte;
   if(odds<=1 || P<=0) return null;
-  return { odds, stake:P/(odds-1), P };
+  return P/(odds-1);
 }
-function updateCalc(){
+// remplit la mise conseillée (quand cote/gain/perte changent) — modifiable ensuite
+function suggest(){
   const warn=document.getElementById('calcWarn');
   const odds=parseFloat(document.getElementById('odds').value)||0;
-  const r=computeBet();
   if(odds>0 && odds<=1){ warn.style.display='block'; warn.textContent='⚠️ La cote doit être supérieure à 1.'; }
   else warn.style.display='none';
-  document.getElementById('calcStake').textContent = r? fmt(r.stake)+' €' : '—';
-  document.getElementById('calcNet').textContent = r? '+'+fmt(r.P)+' €' : '—';
+  const s=computeSuggested();
+  if(s!=null) document.getElementById('stake').value=Math.round(s*100)/100;
+  updateNet();
 }
-function onObjectifInput(){ const L=getLeague(); if(L){ const t=parseFloat(document.getElementById('objectif').value); if(!isNaN(t)&&t>=0){ L.target=t; save(); } } updateCalc(); }
+// recalcule le gain net à partir de la mise réellement saisie
+function updateNet(){
+  const odds=parseFloat(document.getElementById('odds').value)||0;
+  const stake=parseFloat(document.getElementById('stake').value)||0;
+  document.getElementById('calcNet').textContent = (odds>1 && stake>0) ? '+'+fmt(stake*(odds-1))+' €' : '—';
+}
+function onObjectifInput(){ const L=getLeague(); if(L){ const t=parseFloat(document.getElementById('objectif').value); if(!isNaN(t)&&t>=0){ L.target=t; save(); } } suggest(); }
 
 function addBet(){
   const L=getLeague(); if(!L){ alert("Ajoutez d'abord une ligue (Admin)."); return; }
-  const r=computeBet();
-  if(!r){ alert("Entrez une cote (>1) et un gain souhaité."); return; }
+  const odds=parseFloat(document.getElementById('odds').value)||0;
+  const stake=parseFloat(document.getElementById('stake').value)||0;
+  if(odds<=1){ alert("Entrez une cote supérieure à 1."); return; }
+  if(stake<=0){ alert("Entrez une mise."); return; }
+  const P=stake*(odds-1);
   L.bets.unshift({ id:"b"+Date.now(), date:todayDate(),
     e1:document.getElementById('e1').value.trim()||'Match', e2:document.getElementById('e2').value.trim()||'',
-    odds:r.odds, stake:Math.round(r.stake*100)/100, P:r.P, result:'pending' });
-  ['e1','e2','odds'].forEach(id=>document.getElementById(id).value='');
+    odds, stake:Math.round(stake*100)/100, P:Math.round(P*100)/100, result:'pending' });
+  ['e1','e2','odds','stake'].forEach(id=>document.getElementById(id).value='');
   save(); render();
 }
 function setResult(id,res){ const L=getLeague(); if(!L) return; const b=L.bets.find(x=>x.id===id); if(!b) return; b.result=(b.result===res)?'pending':res; save(); render(); }
@@ -264,7 +308,7 @@ function render(){
     document.getElementById('budget').textContent='—'; document.getElementById('solde').textContent='—'; document.getElementById('toRecover').textContent='—';
     document.getElementById('rateLine').textContent='Ajoutez une ligue dans l\'Admin';
     document.getElementById('betList').innerHTML='<div class="empty">Aucune ligue. Ouvrez l\'Admin pour en ajouter.</div>';
-    document.getElementById('objectif').value=''; document.getElementById('perte').value=''; updateCalc(); renderLeaguesAdmin(); return;
+    document.getElementById('objectif').value=''; document.getElementById('perte').value=''; suggest(); renderLeaguesAdmin(); return;
   }
   const settled=L.bets.filter(b=>b.result!=='pending');
   const net=settled.reduce((s,b)=>s+betProfit(b),0);
@@ -299,7 +343,7 @@ function render(){
       <div style="text-align:right;margin-top:6px"><button class="del" onclick="askDelete('${b.id}')">🗑️ supprimer</button></div>
     </li>`;
   }).join('');
-  renderLeaguesAdmin(); updateCalc();
+  renderLeaguesAdmin(); suggest();
 }
 
 function renderLeaguesAdmin(){
@@ -336,6 +380,8 @@ function checkPin(){
 }
 
 render();
+pullData();
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) pullData(); });
 </script>
 </body>
 </html>
