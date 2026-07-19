@@ -19,11 +19,14 @@
   .header h1{font-size:19px;font-weight:700;margin:0}
   .header .sub{font-size:13px;color:var(--muted);margin-top:3px}
 
-  .leagues-bar{display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;-webkit-overflow-scrolling:touch}
-  .leagues-bar::-webkit-scrollbar{display:none}
-  .pill{flex:0 0 auto;background:var(--card);border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:9px 15px;font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap}
-  .pill.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-  .pill.add{color:var(--accent);background:var(--accent-soft);border-color:transparent}
+  .leagues-bar{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;margin-bottom:14px}
+  .pill{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:8px 8px;cursor:pointer;text-align:center}
+  .pill .pn{display:block;font-size:11.5px;font-weight:700;line-height:1.15;color:var(--ink)}
+  .pill .pnet{display:block;font-size:12px;font-weight:800;margin-top:3px;color:var(--muted)}
+  .pill .pnet.pos{color:var(--green)} .pill .pnet.neg{color:#ff8b8b}
+  .pill.active{background:var(--accent);border-color:var(--accent)}
+  .pill.active .pn,.pill.active .pnet{color:#fff}
+  .pill.add{color:var(--accent);background:var(--accent-soft);border-color:transparent;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
 
   .hero{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;text-align:center;margin-bottom:12px}
   .hero .lbl{font-size:13px;color:var(--muted)}
@@ -298,8 +301,12 @@ function clearLeague(){ openPin({type:'clearLeague'}); }
 
 function render(){
   const bar=document.getElementById('leaguesBar');
-  bar.innerHTML = data.leagues.map(l=>`<div class="pill ${l.id===selLeague?'active':''}" onclick="selectLeague('${l.id}')">${l.name}</div>`).join('')
-    + `<div class="pill add" onclick="openPin({type:'admin'})">+ Ligue</div>`;
+  bar.innerHTML = data.leagues.map(l=>{
+    const st=l.bets.filter(b=>b.result!=='pending');
+    const net=st.reduce((s,b)=>s+betProfit(b),0);
+    const cls=net>0?'pos':(net<0?'neg':'');
+    return `<div class="pill ${l.id===selLeague?'active':''}" onclick="selectLeague('${l.id}')"><span class="pn">${l.name}</span><span class="pnet ${cls}">${money(net)}</span></div>`;
+  }).join('') + `<div class="pill add" onclick="openPin({type:'admin'})">+ Ligue</div>`;
 
   const L=getLeague(), np=document.getElementById('netProfit');
   if(!L){
