@@ -186,7 +186,8 @@
   </div>
   <button class="btn-primary btn-full" style="margin-top:10px" onclick="addLeague()">Ajouter la ligue</button>
   <div class="divider"></div>
-  <button class="btn-soft btn-full" onclick="document.getElementById('adminPanel').classList.remove('show')">Verrouiller</button>
+  <button class="btn-soft btn-full" onclick="reverrouiller()">Redemander le code PIN sur cet appareil</button>
+  <button class="btn-soft btn-full" style="margin-top:8px" onclick="document.getElementById('adminPanel').classList.remove('show')">Fermer</button>
 </div>
 
 <div class="foot">Jouer comporte des risques. Pour être aidé : 09-74-75-13-13.</div>
@@ -206,7 +207,7 @@
 </div>
 
 <script>
-const ADMIN_PIN="210919", LS_KEY="suiviParisNulData", LS_OPEN="parisNulOpenLists";
+const ADMIN_PIN="210919", LS_KEY="suiviParisNulData", LS_OPEN="parisNulOpenLists", LS_UNLOCK="parisNulUnlocked";
 let data = JSON.parse(localStorage.getItem(LS_KEY)||"null") || { leagues:[], dette:0 };
 if(!Array.isArray(data.leagues)) data.leagues=[];
 if(typeof data.dette!=='number') data.dette=0;
@@ -467,20 +468,40 @@ function renderAdmin(){
 
 // ---- PIN ----
 let pinAction=null, pinEntry="", pendingDel=null;
+
+// une fois le code saisi correctement, cet appareil ne le redemande plus
+function estDeverrouille(){ try{ return localStorage.getItem(LS_UNLOCK)==='1'; }catch(e){ return false; } }
+function reverrouiller(){
+  try{ localStorage.removeItem(LS_UNLOCK); }catch(e){}
+  document.getElementById('adminPanel').classList.remove('show');
+  render();
+  alert("Le code PIN sera redemandé sur cet appareil.");
+}
+
+// exécute l'action protégée (suppression, vidage, ouverture de l'admin)
+function runAction(a){
+  a=a||{type:'admin'};
+  if(a.type==='delBet' && pendingDel){ const L=getL(pendingDel.lid); if(L) L.bets=L.bets.filter(b=>b.id!==pendingDel.bid); }
+  else if(a.type==='clearLeague'){ const L=getL(a.lid); if(L) L.bets=[]; }
+  else document.getElementById('adminPanel').classList.add('show');
+  pinAction=null; pendingDel=null; pinEntry=""; save(); render();
+}
+
 function askDelete(lid,bid){ pendingDel={lid,bid}; openPin({type:'delBet'}); }
-function openPin(a){ pinAction=a||{type:'admin'}; pinEntry=""; updateDots(); document.getElementById('pinOverlay').classList.add('show'); }
+function openPin(a){
+  pinAction=a||{type:'admin'};
+  if(estDeverrouille()){ runAction(pinAction); return; }   // déjà déverrouillé : on n'affiche rien
+  pinEntry=""; updateDots(); document.getElementById('pinOverlay').classList.add('show');
+}
 function closePin(){ document.getElementById('pinOverlay').classList.remove('show'); pinEntry=""; pinAction=null; pendingDel=null; }
 function press(x){ if(pinEntry.length>=6)return; pinEntry+=x; updateDots(); if(pinEntry.length===6) setTimeout(checkPin,150); }
 function backspace(){ pinEntry=pinEntry.slice(0,-1); updateDots(); }
 function updateDots(){ document.querySelectorAll('#dots .dot').forEach((d,i)=>d.className="dot"+(i<pinEntry.length?" filled":"")); }
 function checkPin(){
   if(pinEntry===ADMIN_PIN){
+    try{ localStorage.setItem(LS_UNLOCK,'1'); }catch(e){}   // retenu pour cet appareil
     document.getElementById('pinOverlay').classList.remove('show');
-    const a=pinAction||{type:'admin'};
-    if(a.type==='delBet' && pendingDel){ const L=getL(pendingDel.lid); if(L) L.bets=L.bets.filter(b=>b.id!==pendingDel.bid); }
-    else if(a.type==='clearLeague'){ const L=getL(a.lid); if(L) L.bets=[]; }
-    else document.getElementById('adminPanel').classList.add('show');
-    pinAction=null; pendingDel=null; pinEntry=""; save(); render();
+    runAction(pinAction);
   } else {
     document.querySelectorAll('#dots .dot').forEach(d=>d.className="dot error");
     setTimeout(()=>{pinEntry="";updateDots();},400);
