@@ -2,174 +2,190 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Paris Nul</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paris Nul · Multi</title>
 <style>
   :root{
-    --bg:#0f1420; --card:#1a2233; --soft:#131a29; --line:#2a3550;
-    --ink:#eaf0fb; --muted:#94a2bd; --accent:#6d86f0; --accent-soft:rgba(109,134,240,.16);
-    --green:#22c55e; --green-soft:rgba(34,197,94,.13); --red:#ef4444; --red-soft:rgba(239,68,68,.13);
-    --amber:#f59e0b; --amber-soft:rgba(245,158,11,.14);
+    --bg:#11151d; --card:#181d27; --soft:#141922; --line:#252b38;
+    --ink:#dfe5ef; --muted:#79839a; --accent:#6a82d6; --accent-soft:rgba(106,130,214,.12);
+    --green:#4fa97a; --red:#cf6060; --amber:#c2933f;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-    background:radial-gradient(1000px 500px at 50% -220px,rgba(109,134,240,.22),transparent),var(--bg);
-    color:var(--ink);padding:18px;max-width:460px;margin:0 auto;min-height:100vh;line-height:1.4}
-  .header{text-align:center;margin-bottom:16px}
-  .header h1{font-size:19px;font-weight:700;margin:0}
-  .header .sub{font-size:13px;color:var(--muted);margin-top:3px}
+    background:var(--bg);color:var(--ink);padding:20px;max-width:1720px;margin:0 auto;
+    min-height:100vh;line-height:1.5;font-size:14px}
 
-  .leagues-bar{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;margin-bottom:14px}
-  .pill{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:8px 8px;cursor:pointer;text-align:center}
-  .pill .pn{display:block;font-size:11.5px;font-weight:700;line-height:1.15;color:var(--ink)}
-  .pill .pnet{display:block;font-size:12px;font-weight:800;margin-top:3px;color:var(--muted)}
-  .pill .pnet.pos{color:var(--green)} .pill .pnet.neg{color:#ff8b8b}
-  .pill.active{background:var(--accent);border-color:var(--accent)}
-  .pill.active .pn,.pill.active .pnet{color:#fff}
-  .pill.add{color:var(--accent);background:var(--accent-soft);border-color:transparent;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+  .header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+  .header h1{font-size:16px;font-weight:600;margin:0}
+  .header .sub{font-size:12px;color:var(--muted);margin-top:1px}
 
-  .hero{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;text-align:center;margin-bottom:12px}
-  .hero .lbl{font-size:13px;color:var(--muted)}
-  .bval{font-weight:700}
-  .hero .bval.big{font-size:38px;margin-top:4px;letter-spacing:-.5px;display:block}
-  .bval.pos{color:var(--green)} .bval.neg{color:var(--red)}
-  .hero .rate{font-size:12.5px;color:var(--muted);margin-top:6px}
-
-  .tiles{display:flex;gap:10px;margin-bottom:16px}
-  .tile{flex:1;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 8px;text-align:center}
-  .tile .l{font-size:11px;color:var(--muted)}
-  .tile .v{font-size:17px;font-weight:600;margin-top:4px}
-  .tile .v.red{color:var(--red)}
-
-  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px}
-  .card h2{font-size:14px;font-weight:600;color:var(--ink);margin:0 0 14px}
-  .grid2{display:flex;gap:10px}
-  label.f{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);font-weight:500;margin-bottom:12px}
-  input{background:var(--soft);border:1px solid var(--line);color:var(--ink);border-radius:12px;padding:13px;font-size:16px;width:100%;min-width:0;font-family:inherit}
-  input::placeholder{color:#5b6885}
+  input{background:var(--soft);border:1px solid var(--line);color:var(--ink);border-radius:8px;
+    padding:8px 10px;font-family:inherit;font-size:13.5px;width:100%}
   input:focus{outline:none;border-color:var(--accent)}
-  .vs{display:flex;align-items:flex-end;justify-content:center;color:var(--muted);font-weight:600;font-size:13px;padding-bottom:12px}
+  input::placeholder{color:#525c70}
+  button{cursor:pointer;font-family:inherit;font-weight:500;border:none;border-radius:8px;
+    color:#fff;padding:9px 14px;font-size:13px;transition:opacity .12s}
+  button:hover{opacity:.87}
+  .btn-primary{background:var(--accent)}
+  .btn-green{background:transparent;color:var(--green);border:1px solid rgba(79,169,122,.4)}
+  .btn-red{background:transparent;color:var(--red);border:1px solid rgba(207,96,96,.4)}
+  .btn-green.on{background:var(--green);color:#fff;border-color:var(--green)}
+  .btn-red.on{background:var(--red);color:#fff;border-color:var(--red)}
+  .btn-soft{background:transparent;color:var(--muted);border:1px solid var(--line)}
+  .btn-full{width:100%}
+  .lbl{font-size:11.5px;color:var(--muted);display:block;margin-bottom:4px}
 
-  .warn{background:var(--red-soft);border:1px solid rgba(239,68,68,.4);color:#ff8b8b;border-radius:12px;padding:11px 13px;font-size:12.5px;margin-bottom:12px;display:none}
+  /* ---------- DETTE ---------- */
+  .dette{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;
+    margin-bottom:12px;display:grid;grid-template-columns:minmax(210px,270px) 1fr;gap:26px;align-items:center}
+  @media(max-width:780px){.dette{grid-template-columns:1fr;gap:18px}}
+  .dette .big{font-size:36px;font-weight:600;letter-spacing:-.8px;line-height:1.1;display:block;margin:2px 0 4px}
+  .dette .big.neg{color:var(--red)} .dette .big.pos{color:var(--green)}
+  .dette .note{font-size:12px;color:var(--muted);line-height:1.5}
+  .parts{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:1px;
+    background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .part{background:var(--card);padding:10px 12px}
+  .part .pn{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .part .pv{font-size:16px;font-weight:600;margin-top:1px}
+  .part .pv.neg{color:var(--red)} .part .pv.pos{color:var(--green)}
 
-  .result{background:var(--accent-soft);border:1px solid rgba(109,134,240,.35);border-radius:14px;padding:2px 16px;margin-bottom:14px}
-  .rrow{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid rgba(109,134,240,.2)}
-  .rrow:last-child{border-bottom:none}
-  .rlbl{font-size:13.5px;color:var(--ink);font-weight:500}
-  .misewrap{display:flex;align-items:center;gap:5px}
-  .misewrap input{width:104px;text-align:right;font-weight:700;font-size:20px;color:var(--accent);background:var(--soft);border:1px solid var(--line);border-radius:9px;padding:7px 9px}
-  .misewrap input:focus{border-color:var(--accent)}
-  .misewrap b{color:var(--accent);font-size:15px}
-  #calcNet{font-weight:700;font-size:18px;color:var(--green)}
+  /* ---------- TOTAUX ---------- */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:1px;
+    background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:20px}
+  .tile{background:var(--card);padding:13px 14px}
+  .tile .l{font-size:11.5px;color:var(--muted)}
+  .tile .v{font-size:18px;font-weight:600;margin-top:1px}
+  .tile .v.pos{color:var(--green)} .tile .v.neg{color:var(--red)} .tile .v.amb{color:var(--amber)}
 
-  button{border:none;border-radius:13px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;color:#fff;font-family:inherit;transition:opacity .1s}
-  button:active{opacity:.85}
-  .btn-primary{background:var(--accent)} .btn-green{background:var(--green)} .btn-red{background:var(--red)}
-  .btn-soft{background:var(--soft);color:var(--ink);border:1px solid var(--line)}
-  .btn-full{width:100%;margin-top:8px}
+  /* ---------- LIGUES ---------- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;align-items:start}
+  .lg{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;
+    display:flex;flex-direction:column;gap:13px}
+  .lg h2{font-size:15px;font-weight:600;margin:0;display:flex;justify-content:space-between;
+    align-items:baseline;gap:8px}
+  .lg h2 .nt{font-size:14px;font-weight:600}
+  .nt.pos{color:var(--green)} .nt.neg{color:var(--red)}
 
-  .bets{list-style:none;padding:0;margin:0}
-  .bet{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px}
-  .bet.win{border-left:3px solid var(--green)} .bet.loss{border-left:3px solid var(--red)} .bet.pending{border-left:3px solid var(--amber)}
-  .row1{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-  .match{font-weight:600;font-size:15px}
-  .meta{color:var(--muted);font-size:12px;margin-top:4px;line-height:1.5}
-  .amt{font-weight:700;font-size:16px;white-space:nowrap}
-  .amt.pos{color:var(--green)} .amt.neg{color:var(--red)} .amt.wait{color:var(--amber)}
-  .actions{display:flex;gap:8px;margin-top:12px}
-  .actions button{flex:1;padding:10px;font-size:14px}
-  .tag{font-size:10.5px;padding:3px 9px;border-radius:7px;font-weight:600}
-  .tag.win{background:var(--green-soft);color:var(--green)} .tag.loss{background:var(--red-soft);color:#ff8b8b} .tag.pending{background:var(--amber-soft);color:var(--amber)}
-  .del{background:none;border:none;color:var(--muted);font-size:12.5px;cursor:pointer;padding:4px}
-  .empty{color:var(--muted);text-align:center;padding:22px;font-size:14px}
-  .divider{height:1px;background:var(--line);margin:16px 0}
-  .lg-item{display:flex;align-items:center;gap:8px;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px}
-  .lg-item .nm{flex:1;font-weight:600;font-size:14px}
-  .lg-item input{width:72px;padding:8px;font-size:14px;text-align:right}
-  .lg-item .lab{font-size:9.5px;color:var(--muted)}
-  .lg-item .del{color:var(--red);font-size:16px}
+  .stats{display:flex;gap:14px;font-size:12.5px;color:var(--muted);flex-wrap:wrap;
+    padding-bottom:12px;border-bottom:1px solid var(--line)}
+  .stats b{font-weight:600;color:var(--ink)}
+  .stats b.neg{color:var(--red)} .stats b.pos{color:var(--green)} .stats b.amb{color:var(--amber)}
 
-  .foot{color:var(--muted);font-size:11px;text-align:center;margin-top:6px;line-height:1.5}
+  .form{display:grid;gap:9px}
+  .form .r2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .form .r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+  .mise{display:flex;justify-content:space-between;align-items:center;
+    background:var(--accent-soft);border-radius:9px;padding:9px 12px}
+  .mise .ml{font-size:12px;color:var(--muted)}
+  .mise .gn{font-size:11.5px;color:var(--green);margin-top:1px}
+  .mise input{width:94px;text-align:right;font-weight:600;font-size:18px;color:var(--accent);
+    background:transparent;border:none;padding:0}
+  .warn{color:var(--red);font-size:11.5px;display:none}
+
+  /* ---------- LISTE REPLIABLE ---------- */
+  .toggle{width:100%;background:transparent;border:1px solid var(--line);color:var(--muted);
+    display:flex;justify-content:space-between;align-items:center;padding:9px 12px;font-size:12.5px}
+  .toggle:hover{border-color:var(--accent);color:var(--ink)}
+  .toggle .chev{transition:transform .18s;font-size:10px}
+  .toggle.open .chev{transform:rotate(180deg)}
+  .toggle.open{color:var(--ink);border-color:var(--accent)}
+
+  .bets{list-style:none;padding:0;margin:0;max-height:340px;overflow-y:auto;display:none;gap:7px}
+  .bets.open{display:grid}
+  .bet{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:10px 11px}
+  .bet.win{border-left:2px solid var(--green)} .bet.loss{border-left:2px solid var(--red)}
+  .bet.pending{border-left:2px solid var(--amber)}
+  .bet .b1{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+  .bet .mt{font-size:13px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bet .me{color:var(--muted);font-size:11px;margin-top:2px}
+  .bet .am{font-size:13px;font-weight:600;white-space:nowrap}
+  .am.pos{color:var(--green)} .am.neg{color:var(--red)} .am.wait{color:var(--amber)}
+  .bet .ac{display:flex;gap:6px;margin-top:9px}
+  .bet .ac button{flex:1;padding:5px;font-size:11.5px}
+  .del{background:none;border:1px solid var(--line);color:var(--muted);font-size:11px;
+    padding:5px 8px;border-radius:8px;flex:0 0 auto !important}
+  .empty{color:var(--muted);text-align:center;padding:14px;font-size:12.5px}
+
+  /* ---------- ADMIN ---------- */
   .admin{display:none} .admin.show{display:block}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:16px}
+  .card h2{font-size:14px;font-weight:600;margin:0 0 14px}
+  .lg-item{display:flex;align-items:flex-end;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .lg-item .nm{flex:1;font-size:13.5px;min-width:110px;padding-bottom:8px}
+  .lg-item input{width:88px;text-align:right}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+  .foot{color:var(--muted);font-size:11.5px;text-align:center;margin-top:18px}
 
-  .overlay{position:fixed;inset:0;background:rgba(6,9,16,.66);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:50}
+  .overlay{position:fixed;inset:0;background:rgba(8,11,17,.72);backdrop-filter:blur(3px);
+    display:none;align-items:center;justify-content:center;z-index:50}
   .overlay.show{display:flex}
-  .pinbox{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:26px 22px;width:320px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.5)}
-  .pinbox h3{font-weight:600;margin:0 0 6px}
-  .pinbox .psub{color:var(--muted);font-size:13px;margin-bottom:22px}
+  .pinbox{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 22px;
+    width:316px;text-align:center}
+  .pinbox h3{font-weight:600;margin:0 0 4px;font-size:15px}
+  .pinbox .psub{color:var(--muted);font-size:12.5px;margin-bottom:22px}
   .dots{display:flex;gap:12px;justify-content:center;margin-bottom:24px}
-  .dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--line)}
+  .dot{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--line)}
   .dot.filled{background:var(--accent);border-color:var(--accent)}
   .dot.error{border-color:var(--red);background:var(--red)}
-  .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;justify-items:center}
-  .key{width:66px;height:66px;border-radius:50%;background:var(--soft);color:var(--ink);font-size:26px;font-weight:500;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--line)}
-  .key:active{background:#1f2740}
-  .key.fn{font-size:14px;background:none;border:none;color:var(--accent);font-weight:600}
+  .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;justify-items:center}
+  .key{width:62px;height:62px;border-radius:50%;background:var(--soft);color:var(--ink);font-size:23px;
+    font-weight:400;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--line)}
+  .key:active{background:#1e2533}
+  .key.fn{font-size:13px;background:none;border:none;color:var(--accent)}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>Paris · Match nul (N)</h1>
-  <div class="sub" id="jeuTitle">Multi-ligues</div>
-  <div class="sub" id="syncBadge" style="font-size:11px;margin-top:2px"></div>
+  <div>
+    <h1>Paris · Match nul</h1>
+    <div class="sub" id="syncBadge"></div>
+  </div>
+  <button class="btn-soft" onclick="openPin({type:'admin'})">Admin</button>
 </div>
 
-<div class="leagues-bar" id="leaguesBar"></div>
-
-<div class="hero">
-  <div class="lbl">Bénéfice net</div>
-  <span class="bval big" id="netProfit">0 €</span>
-  <div class="rate" id="rateLine"></div>
+<!-- ---------- DETTE ---------- -->
+<div class="dette">
+  <div>
+    <span class="lbl">Dette totale actuelle</span>
+    <span class="big" id="detteNow">0 €</span>
+    <div class="note" id="detteNote"></div>
+    <div style="margin-top:14px">
+      <span class="lbl">Dette de départ</span>
+      <input type="number" id="detteBase" step="1" inputmode="numeric" placeholder="0" oninput="onDetteInput()">
+    </div>
+  </div>
+  <div>
+    <span class="lbl">Répartition par ligue</span>
+    <div class="parts" id="parts"></div>
+  </div>
 </div>
 
+<!-- ---------- TOTAUX ---------- -->
 <div class="tiles">
-  <div class="tile"><div class="l">Budget</div><div class="v" id="budget">—</div></div>
-  <div class="tile"><div class="l">Solde</div><div class="v" id="solde">—</div></div>
-  <div class="tile"><div class="l">À récupérer</div><div class="v red" id="toRecover">—</div></div>
+  <div class="tile"><div class="l">Budget</div><div class="v" id="tBudget">—</div></div>
+  <div class="tile"><div class="l">Solde</div><div class="v" id="tSolde">—</div></div>
+  <div class="tile"><div class="l">Bénéfice net</div><div class="v" id="tNet">—</div></div>
+  <div class="tile"><div class="l">En attente</div><div class="v amb" id="tPending">—</div></div>
+  <div class="tile"><div class="l">Paris réglés</div><div class="v" id="tSettled">—</div></div>
+  <div class="tile"><div class="l">Réussite</div><div class="v" id="tRate">—</div></div>
 </div>
 
-<div class="card">
-  <h2>Nouveau pari · Nul</h2>
-  <div class="grid2">
-    <label class="f">Équipe 1<input type="text" id="e1" placeholder="Domicile"></label>
-    <div class="vs">vs</div>
-    <label class="f">Équipe 2<input type="text" id="e2" placeholder="Extérieur"></label>
-  </div>
-  <label class="f">Cote (nul)<input type="number" id="odds" step="0.01" placeholder="3.30" inputmode="decimal" oninput="suggest()"></label>
-  <div class="grid2">
-    <label class="f">Gain souhaité €<input type="number" id="objectif" step="1" placeholder="50" inputmode="numeric" oninput="onObjectifInput()"></label>
-    <label class="f">Perte à récupérer €<input type="number" id="perte" step="1" placeholder="0" inputmode="numeric" oninput="suggest()"></label>
-  </div>
+<!-- ---------- LIGUES ---------- -->
+<div class="grid" id="grid"></div>
 
-  <div class="warn" id="calcWarn"></div>
-
-  <div class="result">
-    <div class="rrow"><span class="rlbl">Mise à jouer</span><span class="misewrap"><input type="number" id="stake" step="0.01" inputmode="decimal" placeholder="—" oninput="updateNet()"><b>€</b></span></div>
-    <div class="rrow"><span class="rlbl">Gain net garanti</span><span id="calcNet">—</span></div>
-  </div>
-
-  <button class="btn-primary btn-full" onclick="addBet()">Enregistrer le pari</button>
-</div>
-
-<div class="card">
-  <h2>Historique</h2>
-  <ul class="bets" id="betList"></ul>
-</div>
-
-<button class="btn-soft btn-full" onclick="openPin({type:'admin'})">🔒 Admin</button>
-
-<div class="card admin" id="adminPanel" style="margin-top:14px">
+<!-- ---------- ADMIN ---------- -->
+<div class="card admin" id="adminPanel">
   <h2>Ligues &amp; budgets</h2>
   <div id="leaguesAdmin"></div>
-  <input type="text" id="newLeagueName" placeholder="Nom de la ligue" style="margin-top:8px">
-  <div class="grid2" style="margin-top:8px">
+  <div style="margin-top:14px"><span class="lbl">Nouvelle ligue</span>
+    <input type="text" id="newLeagueName" placeholder="Nom de la ligue"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
     <input type="number" id="newLeagueBudget" placeholder="Budget €" inputmode="numeric">
     <input type="number" id="newLeagueTarget" placeholder="Gain souhaité €" inputmode="numeric">
   </div>
-  <button class="btn-primary btn-full" onclick="addLeague()">Ajouter la ligue</button>
+  <button class="btn-primary btn-full" style="margin-top:10px" onclick="addLeague()">Ajouter la ligue</button>
   <div class="divider"></div>
-  <button class="btn-red btn-full" onclick="clearLeague()">Vider les paris de cette ligue</button>
   <button class="btn-soft btn-full" onclick="document.getElementById('adminPanel').classList.remove('show')">Verrouiller</button>
 </div>
 
@@ -190,10 +206,14 @@
 </div>
 
 <script>
-const ADMIN_PIN="210919", LS_KEY="suiviParisNulData";
-let data = JSON.parse(localStorage.getItem(LS_KEY)||"null") || { leagues:[] };
+const ADMIN_PIN="210919", LS_KEY="suiviParisNulData", LS_OPEN="parisNulOpenLists";
+let data = JSON.parse(localStorage.getItem(LS_KEY)||"null") || { leagues:[], dette:0 };
 if(!Array.isArray(data.leagues)) data.leagues=[];
-let selLeague = localStorage.getItem("selLeagueNul") || (data.leagues[0]&&data.leagues[0].id) || null;
+if(typeof data.dette!=='number') data.dette=0;
+
+// quelles listes de paris sont ouvertes (par ligue) — fermées par défaut
+let openLists = {};
+try{ openLists = JSON.parse(localStorage.getItem(LS_OPEN)||"{}") || {}; }catch(e){ openLists={}; }
 
 // ---- SYNCHRONISATION (Cloudflare Worker) ----
 const WORKER_URL="https://paris-data.w3ruslan-8c5.workers.dev";
@@ -202,7 +222,7 @@ function saveLocal(){ localStorage.setItem(LS_KEY, JSON.stringify(data)); }
 function save(){ saveLocal(); localStorage.setItem('pendingParisNul','1'); scheduleSync(); }
 function setSync(t){ const e=document.getElementById('syncBadge'); if(e) e.textContent=t; }
 async function pullData(){
-  setSync('⏳ Chargement…');
+  setSync('Chargement…');
   try{
     const r=await fetch(WORKER_URL+"?t="+Date.now(),{cache:'no-store'});
     if(!r.ok) throw new Error('HTTP '+r.status);
@@ -211,173 +231,254 @@ async function pullData(){
     const pending=localStorage.getItem('pendingParisNul')==='1';
     if(pending){ await pushData(); return; }
     if(cl.length===0 && data.leagues.length>0){ await pushData(); return; }
-    data={leagues:cl};
-    if(!data.leagues.some(l=>l.id===selLeague)) selLeague=(data.leagues[0]&&data.leagues[0].id)||null;
+    data={ leagues:cl, dette:(typeof cloud.dette==='number'?cloud.dette:(data.dette||0)) };
     saveLocal(); render();
-    setSync('☁️ Synchronisé');
-  }catch(e){ setSync('👁️ Hors ligne'); }
+    setSync('Synchronisé');
+  }catch(e){ setSync('Hors ligne'); }
 }
-function scheduleSync(){ setSync('✎ Enregistrement…'); clearTimeout(syncTimer); syncTimer=setTimeout(pushData,900); }
+function scheduleSync(){ setSync('Enregistrement…'); clearTimeout(syncTimer); syncTimer=setTimeout(pushData,900); }
 async function pushData(){
-  setSync('⏳ Enregistrement…');
+  setSync('Enregistrement…');
   try{
     const r=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
     if(!r.ok) throw new Error('HTTP '+r.status);
-    localStorage.removeItem('pendingParisNul'); setSync('☁️ Synchronisé');
-  }catch(e){ setSync('⚠️ '+e.message); }
+    localStorage.removeItem('pendingParisNul'); setSync('Synchronisé');
+  }catch(e){ setSync(e.message); }
 }
+
+// ---- OUTILS ----
 function fmt(n){ return Number(n).toFixed(2).replace(/\./,',').replace(/,00$/,'').replace(/(,\d)0$/,'$1'); }
 function money(n){ return (n>0?'+':'')+fmt(n)+' €'; }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function todayDate(){ const d=new Date(); return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getFullYear()).slice(2); }
-function getLeague(){ return data.leagues.find(l=>l.id===selLeague) || null; }
+function getL(id){ return data.leagues.find(l=>l.id===id)||null; }
 
 function betProfit(b){ if(b.result==='win') return b.P; if(b.result==='loss') return -b.stake; return 0; }
 function currentLoss(bets){ let acc=0; [...bets].reverse().forEach(b=>{ if(b.result==='loss') acc+=b.stake; else if(b.result==='win') acc=0; }); return acc; }
+function netLigue(L){ return L.bets.filter(b=>b.result!=='pending').reduce((s,b)=>s+betProfit(b),0); }
 
-// ---- CALCUL (nul seul) : mise conseillée = (gain + perte) / (cote - 1), modifiable ----
-function computeSuggested(){
-  const odds=parseFloat(document.getElementById('odds').value)||0;
-  const obj=parseFloat(document.getElementById('objectif').value)||0;
-  const perte=parseFloat(document.getElementById('perte').value)||0;
-  const P=obj+perte;
-  if(odds<=1 || P<=0) return null;
-  return P/(odds-1);
+// ---- DETTE ----
+//   dette d'une ligue = part de départ − bénéfice net de la ligue
+//   dette totale      = dette de départ − bénéfice net total
+function partDette(){ const n=data.leagues.length; return n>0 ? (data.dette||0)/n : 0; }
+function detteLigue(L){ return partDette() - netLigue(L); }
+function detteTotale(){ return (data.dette||0) - data.leagues.reduce((s,L)=>s+netLigue(L),0); }
+function onDetteInput(){
+  const v=parseFloat(document.getElementById('detteBase').value);
+  data.dette = isNaN(v)?0:v; save(); render();
 }
-// remplit la mise conseillée (quand cote/gain/perte changent) — modifiable ensuite
-function suggest(){
-  const warn=document.getElementById('calcWarn');
-  const odds=parseFloat(document.getElementById('odds').value)||0;
-  if(odds>0 && odds<=1){ warn.style.display='block'; warn.textContent='⚠️ La cote doit être supérieure à 1.'; }
-  else warn.style.display='none';
-  const s=computeSuggested();
-  if(s!=null) document.getElementById('stake').value=Math.round(s*100)/100;
-  updateNet();
-}
-// recalcule le gain net à partir de la mise réellement saisie
-function updateNet(){
-  const odds=parseFloat(document.getElementById('odds').value)||0;
-  const stake=parseFloat(document.getElementById('stake').value)||0;
-  document.getElementById('calcNet').textContent = (odds>1 && stake>0) ? '+'+fmt(stake*(odds-1))+' €' : '—';
-}
-function onObjectifInput(){ const L=getLeague(); if(L){ const t=parseFloat(document.getElementById('objectif').value); if(!isNaN(t)&&t>=0){ L.target=t; save(); } } suggest(); }
 
-function addBet(){
-  const L=getLeague(); if(!L){ alert("Ajoutez d'abord une ligue (Admin)."); return; }
-  const odds=parseFloat(document.getElementById('odds').value)||0;
-  const stake=parseFloat(document.getElementById('stake').value)||0;
+// ---- LISTE REPLIABLE ----
+function toggleBets(id){
+  openLists[id] = !openLists[id];
+  localStorage.setItem(LS_OPEN, JSON.stringify(openLists));
+  const ul=document.getElementById('bets_'+id), bt=document.getElementById('tg_'+id);
+  if(ul) ul.classList.toggle('open', !!openLists[id]);
+  if(bt) bt.classList.toggle('open', !!openLists[id]);
+}
+
+// ---- CALCUL : mise = (gain souhaité + à récupérer) / (cote − 1) ----
+function recalc(id){
+  const odds=parseFloat(document.getElementById('odds_'+id).value)||0;
+  const obj =parseFloat(document.getElementById('obj_'+id).value)||0;
+  const per =parseFloat(document.getElementById('per_'+id).value)||0;
+  const w=document.getElementById('warn_'+id);
+  if(odds>0 && odds<=1){ w.style.display='block'; w.textContent='La cote doit être supérieure à 1.'; }
+  else w.style.display='none';
+  const P=obj+per;
+  if(odds>1 && P>0) document.getElementById('mise_'+id).value=Math.round(P/(odds-1)*100)/100;
+  updateNet(id);
+}
+function updateNet(id){
+  const odds=parseFloat(document.getElementById('odds_'+id).value)||0;
+  const st=parseFloat(document.getElementById('mise_'+id).value)||0;
+  document.getElementById('gn_'+id).textContent=(odds>1&&st>0)?'gain net +'+fmt(st*(odds-1))+' €':'';
+}
+function onTarget(id){
+  const L=getL(id); if(!L) return;
+  const t=parseFloat(document.getElementById('obj_'+id).value);
+  if(!isNaN(t)&&t>=0){ L.target=t; save(); }
+  recalc(id);
+}
+
+function addBet(id){
+  const L=getL(id); if(!L) return;
+  const odds=parseFloat(document.getElementById('odds_'+id).value)||0;
+  const stake=parseFloat(document.getElementById('mise_'+id).value)||0;
   if(odds<=1){ alert("Entrez une cote supérieure à 1."); return; }
   if(stake<=0){ alert("Entrez une mise."); return; }
-  const P=stake*(odds-1);
   L.bets.unshift({ id:"b"+Date.now(), date:todayDate(),
-    e1:document.getElementById('e1').value.trim()||'Match', e2:document.getElementById('e2').value.trim()||'',
-    odds, stake:Math.round(stake*100)/100, P:Math.round(P*100)/100, result:'pending' });
-  ['e1','e2','odds','stake'].forEach(id=>document.getElementById(id).value='');
+    e1:document.getElementById('e1_'+id).value.trim()||'Match',
+    e2:document.getElementById('e2_'+id).value.trim()||'',
+    odds, stake:Math.round(stake*100)/100, P:Math.round(stake*(odds-1)*100)/100, result:'pending' });
   save(); render();
 }
-function setResult(id,res){ const L=getLeague(); if(!L) return; const b=L.bets.find(x=>x.id===id); if(!b) return; b.result=(b.result===res)?'pending':res; save(); render(); }
+function setResult(lid,bid,res){
+  const L=getL(lid); if(!L) return;
+  const b=L.bets.find(x=>x.id===bid); if(!b) return;
+  b.result=(b.result===res)?'pending':res; save(); render();
+}
 
 // ---- LIGUES ----
-function selectLeague(id){ selLeague=id; localStorage.setItem("selLeagueNul",id); render(); }
 function addLeague(){
   const name=document.getElementById('newLeagueName').value.trim();
   const budget=parseFloat(document.getElementById('newLeagueBudget').value)||0;
   const target=parseFloat(document.getElementById('newLeagueTarget').value)||50;
   if(!name){ alert("Nom de la ligue ?"); return; }
-  const id="l"+Date.now();
-  data.leagues.push({ id, name, budget, target, bets:[] });
-  selLeague=id; localStorage.setItem("selLeagueNul",id);
+  data.leagues.push({ id:"l"+Date.now(), name, budget, target, bets:[] });
   ['newLeagueName','newLeagueBudget','newLeagueTarget'].forEach(x=>document.getElementById(x).value='');
   save(); render();
 }
 function removeLeague(id){
-  const L=data.leagues.find(l=>l.id===id); if(!L) return;
+  const L=getL(id); if(!L) return;
   if(!confirm(`Supprimer la ligue "${L.name}" et tous ses paris ?`)) return;
-  data.leagues=data.leagues.filter(l=>l.id!==id);
-  if(selLeague===id){ selLeague=(data.leagues[0]&&data.leagues[0].id)||null; localStorage.setItem("selLeagueNul",selLeague||""); }
-  save(); render();
+  data.leagues=data.leagues.filter(l=>l.id!==id); save(); render();
 }
-function updateLeague(id,field,val){ const L=data.leagues.find(l=>l.id===id); if(!L) return; const v=parseFloat(val); if(isNaN(v)||v<0) return; L[field]=v; save(); render(); }
-function clearLeague(){ openPin({type:'clearLeague'}); }
+function updateLeague(id,field,val){
+  const L=getL(id); if(!L) return;
+  const v=parseFloat(val); if(isNaN(v)||v<0) return;
+  L[field]=v; save(); render();
+}
+function clearLeague(id){ openPin({type:'clearLeague',lid:id}); }
 
+// ---- RENDU ----
 function render(){
-  const bar=document.getElementById('leaguesBar');
-  bar.innerHTML = data.leagues.map(l=>{
-    const st=l.bets.filter(b=>b.result!=='pending');
-    const net=st.reduce((s,b)=>s+betProfit(b),0);
-    const cls=net>0?'pos':(net<0?'neg':'');
-    return `<div class="pill ${l.id===selLeague?'active':''}" onclick="selectLeague('${l.id}')"><span class="pn">${l.name}</span><span class="pnet ${cls}">${money(net)}</span></div>`;
-  }).join('') + `<div class="pill add" onclick="openPin({type:'admin'})">+ Ligue</div>`;
+  const n=data.leagues.length, part=partDette(), dTot=detteTotale();
 
-  const L=getLeague(), np=document.getElementById('netProfit');
-  if(!L){
-    document.getElementById('jeuTitle').textContent='Aucune ligue';
-    np.textContent='—'; np.className='bval big';
-    document.getElementById('budget').textContent='—'; document.getElementById('solde').textContent='—'; document.getElementById('toRecover').textContent='—';
-    document.getElementById('rateLine').textContent='Ajoutez une ligue dans l\'Admin';
-    document.getElementById('betList').innerHTML='<div class="empty">Aucune ligue. Ouvrez l\'Admin pour en ajouter.</div>';
-    document.getElementById('objectif').value=''; document.getElementById('perte').value=''; suggest(); renderLeaguesAdmin(); return;
-  }
-  const settled=L.bets.filter(b=>b.result!=='pending');
-  const net=settled.reduce((s,b)=>s+betProfit(b),0);
-  const wins=settled.filter(b=>b.result==='win').length;
-  const loss=currentLoss(L.bets);
-  document.getElementById('jeuTitle').textContent=L.name;
-  np.textContent=money(net); np.className='bval big '+(net>=0?'pos':'neg');
-  document.getElementById('budget').textContent=fmt(L.budget)+' €';
-  document.getElementById('solde').textContent=fmt(L.budget+net)+' €';
-  document.getElementById('toRecover').textContent=fmt(loss)+' €';
-  document.getElementById('rateLine').textContent = settled.length? `${settled.length} paris réglés · ${Math.round(wins/settled.length*100)}% de réussite` : 'Aucun pari réglé';
-  document.getElementById('objectif').value=L.target;
-  document.getElementById('perte').value = loss? Math.round(loss*100)/100 : '';
+  const db=document.getElementById('detteBase');
+  if(document.activeElement!==db) db.value = data.dette ? data.dette : '';
+  const dn=document.getElementById('detteNow');
+  dn.textContent=(dTot>0?'':'+')+fmt(Math.abs(dTot))+' €';
+  dn.className='big '+(dTot>0?'neg':'pos');
+  document.getElementById('detteNote').textContent = n===0
+    ? "Ajoutez des ligues dans l'Admin."
+    : (dTot>0
+        ? `${fmt(data.dette||0)} € réparti sur ${n} ligue${n>1?'s':''} = ${fmt(part)} € chacune. Chaque perte s'ajoute, chaque gain retire.`
+        : `Dette remboursée — en avance de ${fmt(Math.abs(dTot))} €.`);
 
-  const list=document.getElementById('betList');
-  if(L.bets.length===0){ list.innerHTML='<div class="empty">Aucun pari.</div>'; }
-  else list.innerHTML=L.bets.map(b=>{
-    const p=betProfit(b); let amtHtml,tag;
-    if(b.result==='pending'){ amtHtml=`<span class="amt wait">+${fmt(b.P)} €</span>`; tag='<span class="tag pending">En attente</span>'; }
-    else if(b.result==='win'){ amtHtml=`<span class="amt pos">${money(p)}</span>`; tag='<span class="tag win">Gagné</span>'; }
-    else { amtHtml=`<span class="amt neg">${money(p)}</span>`; tag='<span class="tag loss">Perdu</span>'; }
-    return `<li class="bet ${b.result}">
-      <div class="row1">
-        <div style="min-width:0"><div class="match">${b.e1}${b.e2?' <span style="color:var(--muted)">–</span> '+b.e2:''}</div>
-          <div class="meta">${b.date} · cote ${fmt(b.odds)} · mise ${fmt(b.stake)} €</div></div>
-        <div style="text-align:right">${tag}<br>${amtHtml}</div>
+  document.getElementById('parts').innerHTML = n===0
+    ? '<div class="part"><div class="pn">—</div></div>'
+    : data.leagues.map(L=>{
+        const d=detteLigue(L);
+        return `<div class="part"><div class="pn">${esc(L.name)}</div>
+          <div class="pv ${d>0?'neg':'pos'}">${(d>0?'':'+')+fmt(Math.abs(d))} €</div></div>`;
+      }).join('');
+
+  let bud=0,net=0,pend=0,settled=0,wins=0;
+  data.leagues.forEach(L=>{
+    bud+=L.budget||0; net+=netLigue(L);
+    L.bets.forEach(b=>{ if(b.result==='pending') pend+=b.stake; else { settled++; if(b.result==='win') wins++; } });
+  });
+  const setV=(id,txt,cls)=>{ const e=document.getElementById(id); e.textContent=txt; e.className='v'+(cls?' '+cls:''); };
+  setV('tBudget', fmt(bud)+' €');
+  setV('tSolde',  fmt(bud+net)+' €');
+  setV('tNet',    money(net), net>=0?'pos':'neg');
+  setV('tPending',fmt(pend)+' €','amb');
+  setV('tSettled',String(settled));
+  setV('tRate',   settled?Math.round(wins/settled*100)+'%':'—');
+
+  const g=document.getElementById('grid');
+  if(n===0){ g.innerHTML='<div class="empty">Aucune ligue. Ouvrez l\'Admin pour en ajouter.</div>'; renderAdmin(); return; }
+
+  g.innerHTML=data.leagues.map(L=>{
+    const nl=netLigue(L), dl=detteLigue(L), cl=currentLoss(L.bets);
+    const st=L.bets.filter(b=>b.result!=='pending');
+    const w=st.filter(b=>b.result==='win').length;
+    const acik=!!openLists[L.id];
+
+    const bets = L.bets.length===0 ? '<li class="empty">Aucun pari.</li>' : L.bets.map(b=>{
+      const p=betProfit(b);
+      const am = b.result==='pending' ? `<span class="am wait">+${fmt(b.P)} €</span>`
+               : b.result==='win'     ? `<span class="am pos">${money(p)}</span>`
+               :                        `<span class="am neg">${money(p)}</span>`;
+      return `<li class="bet ${b.result}">
+        <div class="b1">
+          <div style="min-width:0">
+            <div class="mt">${esc(b.e1)}${b.e2?' – '+esc(b.e2):''}</div>
+            <div class="me">${b.date} · cote ${fmt(b.odds)} · mise ${fmt(b.stake)} €</div>
+          </div>${am}
+        </div>
+        <div class="ac">
+          <button class="btn-green ${b.result==='win'?'on':''}" onclick="setResult('${L.id}','${b.id}','win')">Gagné</button>
+          <button class="btn-red ${b.result==='loss'?'on':''}" onclick="setResult('${L.id}','${b.id}','loss')">Perdu</button>
+          <button class="del" onclick="askDelete('${L.id}','${b.id}')">✕</button>
+        </div>
+      </li>`;
+    }).join('');
+
+    const enAttente=L.bets.filter(b=>b.result==='pending').length;
+
+    return `<div class="lg">
+      <h2><span>${esc(L.name)}</span><span class="nt ${nl>=0?'pos':'neg'}">${money(nl)}</span></h2>
+
+      <div class="stats">
+        <span>Dette <b class="${dl>0?'neg':'pos'}">${(dl>0?'':'+')+fmt(Math.abs(dl))} €</b></span>
+        <span>Série <b class="${cl>0?'amb':''}">${fmt(cl)} €</b></span>
+        <span>Solde <b>${fmt((L.budget||0)+nl)} €</b></span>
       </div>
-      <div class="actions">
-        <button class="btn-green" onclick="setResult('${b.id}','win')">${b.result==='win'?'✓ Gagné':'Gagné'}</button>
-        <button class="btn-red" onclick="setResult('${b.id}','loss')">${b.result==='loss'?'✓ Perdu':'Perdu'}</button>
+
+      <div class="form">
+        <div class="r2">
+          <input type="text" id="e1_${L.id}" placeholder="Domicile">
+          <input type="text" id="e2_${L.id}" placeholder="Extérieur">
+        </div>
+        <div class="r3">
+          <div><span class="lbl">Cote</span><input type="number" id="odds_${L.id}" step="0.01" inputmode="decimal" placeholder="3.30" oninput="recalc('${L.id}')"></div>
+          <div><span class="lbl">Gain voulu</span><input type="number" id="obj_${L.id}" step="1" inputmode="numeric" value="${L.target}" oninput="onTarget('${L.id}')"></div>
+          <div><span class="lbl">À récupérer</span><input type="number" id="per_${L.id}" step="1" inputmode="numeric" value="${Math.max(0,Math.round(dl*100)/100)}" oninput="recalc('${L.id}')"></div>
+        </div>
+        <div class="warn" id="warn_${L.id}"></div>
+        <div class="mise">
+          <div><div class="ml">Mise à jouer</div><div class="gn" id="gn_${L.id}"></div></div>
+          <div style="display:flex;align-items:center;gap:3px">
+            <input type="number" id="mise_${L.id}" step="0.01" inputmode="decimal" placeholder="—" oninput="updateNet('${L.id}')">
+            <span style="color:var(--accent);font-size:15px">€</span>
+          </div>
+        </div>
+        <button class="btn-primary btn-full" onclick="addBet('${L.id}')">Enregistrer le pari</button>
       </div>
-      <div style="text-align:right;margin-top:6px"><button class="del" onclick="askDelete('${b.id}')">🗑️ supprimer</button></div>
-    </li>`;
+
+      <button class="toggle ${acik?'open':''}" id="tg_${L.id}" onclick="toggleBets('${L.id}')">
+        <span>Paris joués · ${L.bets.length}${enAttente?' · '+enAttente+' en attente':''}${st.length?' · '+Math.round(w/st.length*100)+'%':''}</span>
+        <span class="chev">▼</span>
+      </button>
+      <ul class="bets ${acik?'open':''}" id="bets_${L.id}">${bets}
+        <li><button class="btn-soft btn-full" style="font-size:11.5px;padding:7px" onclick="clearLeague('${L.id}')">Vider les paris</button></li>
+      </ul>
+    </div>`;
   }).join('');
-  renderLeaguesAdmin(); suggest();
+
+  data.leagues.forEach(L=>recalc(L.id));
+  renderAdmin();
 }
 
-function renderLeaguesAdmin(){
+function renderAdmin(){
   const el=document.getElementById('leaguesAdmin'); if(!el) return;
-  if(data.leagues.length===0){ el.innerHTML='<div class="empty" style="padding:8px">Aucune ligue.</div>'; return; }
-  el.innerHTML=data.leagues.map(l=>`
-    <div class="lg-item">
-      <span class="nm">${l.name}</span>
-      <div><div class="lab">Budget</div><input type="number" value="${l.budget}" onchange="updateLeague('${l.id}','budget',this.value)"></div>
-      <div><div class="lab">Gain</div><input type="number" value="${l.target}" onchange="updateLeague('${l.id}','target',this.value)"></div>
-      <button class="del" onclick="removeLeague('${l.id}')">🗑️</button>
-    </div>`).join('');
+  el.innerHTML = data.leagues.length===0
+    ? '<div class="empty" style="padding:8px">Aucune ligue.</div>'
+    : data.leagues.map(l=>`
+      <div class="lg-item">
+        <span class="nm">${esc(l.name)}</span>
+        <div><span class="lbl">Budget</span><input type="number" value="${l.budget}" onchange="updateLeague('${l.id}','budget',this.value)"></div>
+        <div><span class="lbl">Gain</span><input type="number" value="${l.target}" onchange="updateLeague('${l.id}','target',this.value)"></div>
+        <button class="del" style="color:var(--red)" onclick="removeLeague('${l.id}')">✕</button>
+      </div>`).join('');
 }
 
+// ---- PIN ----
 let pinAction=null, pinEntry="", pendingDel=null;
-function askDelete(id){ pendingDel=id; openPin({type:'delBet'}); }
-function openPin(action){ pinAction=action||{type:'admin'}; pinEntry=""; updateDots(); document.getElementById('pinOverlay').classList.add('show'); }
+function askDelete(lid,bid){ pendingDel={lid,bid}; openPin({type:'delBet'}); }
+function openPin(a){ pinAction=a||{type:'admin'}; pinEntry=""; updateDots(); document.getElementById('pinOverlay').classList.add('show'); }
 function closePin(){ document.getElementById('pinOverlay').classList.remove('show'); pinEntry=""; pinAction=null; pendingDel=null; }
-function press(n){ if(pinEntry.length>=6)return; pinEntry+=n; updateDots(); if(pinEntry.length===6) setTimeout(checkPin,150); }
+function press(x){ if(pinEntry.length>=6)return; pinEntry+=x; updateDots(); if(pinEntry.length===6) setTimeout(checkPin,150); }
 function backspace(){ pinEntry=pinEntry.slice(0,-1); updateDots(); }
 function updateDots(){ document.querySelectorAll('#dots .dot').forEach((d,i)=>d.className="dot"+(i<pinEntry.length?" filled":"")); }
 function checkPin(){
   if(pinEntry===ADMIN_PIN){
     document.getElementById('pinOverlay').classList.remove('show');
     const a=pinAction||{type:'admin'};
-    if(a.type==='delBet'){ const L=getLeague(); if(L) L.bets=L.bets.filter(b=>b.id!==pendingDel); }
-    else if(a.type==='clearLeague'){ const L=getLeague(); if(L) L.bets=[]; }
+    if(a.type==='delBet' && pendingDel){ const L=getL(pendingDel.lid); if(L) L.bets=L.bets.filter(b=>b.id!==pendingDel.bid); }
+    else if(a.type==='clearLeague'){ const L=getL(a.lid); if(L) L.bets=[]; }
     else document.getElementById('adminPanel').classList.add('show');
     pinAction=null; pendingDel=null; pinEntry=""; save(); render();
   } else {
